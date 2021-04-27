@@ -1,0 +1,80 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  user-api:
+    build:
+      context: .
+      dockerfile: ./service/api/user/Dockerfile
+    container_name: user-api
+    ports:
+      - "8080:8080"
+    depends_on:
+      - etcd
+      - mysql
+      - redis
+      - user-rpc
+    networks:
+      - microblog-network
+    volumes:
+      - ./project_env/user-api/user-api.yaml:/app/etc/user-api.yaml
+
+  user-rpc:
+    build:
+      context: .
+      dockerfile: ./service/rpc/user/Dockerfile
+    container_name: user-rpc
+    expose:
+      - 8888
+    depends_on:
+      - etcd
+      - mysql
+      - redis
+    networks:
+      - microblog-network
+    volumes:
+      - ./project_env/user-rpc/user.yaml:/app/etc/user.yaml
+
+  etcd:
+    image: bitnami/etcd
+    container_name: etcd
+    environment:
+      ALLOW_NONE_AUTHENTICATION: "yes"
+      ETCD_ADVERTISE_CLIENT_URLS: "http://etcd:2379"
+    expose:
+      - 2379
+    networks:
+      - microblog-network
+    volumes:
+      - ./project_env/etcd:/bitnami/etcd
+
+  mysql:
+    image: "mysql:5.7"
+    container_name: mysql
+    expose:
+      - 3306
+    networks:
+      - microblog-network
+    environment:
+      MYSQL_ROOT_PASSWORD: "83ced46e-76c2-4d23-8583-c15f4ad3f984"
+      MYSQL_USER: microblog
+      MYSQL_PASSWORD: "03561e59-609d-4f10-a80b-2c17cb3bfb75"
+      MYSQL_DATABASE: microblog
+    volumes:
+      - ./project_env/mysql/db:/var/lib/mysql
+      - ./project_env/mysql/conf/mysql.cnf:/etc/mysql/mysql.cnf
+      - ./project_env/mysql/init:/docker-entrypoint-initdb.d   # 建库建表的脚本放到这里
+
+
+  redis:
+    image: "redis:6"
+    container_name: redis
+    expose:
+      - 6379
+    networks:
+      - microblog-network
+    volumes:
+      - ./project_env/redis:/data
+    entrypoint: ["docker-entrypoint.sh", "--requirepass", "6210bbcb-c65c-490b-a196-6bc45a26baa9"]
+
+networks:
+  microblog-network:
+    driver: bridge

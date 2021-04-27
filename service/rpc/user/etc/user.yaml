@@ -1,0 +1,16 @@
+Name: user.rpc
+ListenOn: user-rpc:8888
+UserPasswordSalt: 2f9c673b-4789-4cbb-8b00-a58cdfc685bd
+Etcd:
+  Hosts:
+  - etcd:2379
+  Key: user.rpc
+Mysql:
+  DataSource: microblog:03561e59-609d-4f10-a80b-2c17cb3bfb75@tcp(mysql:3306)/microblog?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+
+# 缓存是多个结点的话会根据key进行哈希，不同的key存到不同的结点，由哈希环实现（一致性哈希）
+CacheRedis:
+  - Host: redis:6379
+    Pass: "6210bbcb-c65c-490b-a196-6bc45a26baa9"    # password
+    Type: node
+    Weight: 100   # 权重，1-100，代表哈希到这个结点的概率，单个结点的话不会创建哈希环，直接使用单体redis连接，因此该参数无所谓

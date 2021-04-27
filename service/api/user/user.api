@@ -1,0 +1,60 @@
+syntax = "v1"
+
+type (
+	UserRegisterRequest {
+		Username string `json:"username,omitempty"` // omitempty表示json序列化时如果字段值为类型零值，忽略该字段
+		Password string `json:"password,omitempty"`
+		Phone    string `json:"phone,omitempty"`
+		Email    string `json:"email,omitempty"`
+	}
+
+	UserRegisterResponse {
+		ErrorCode    int32  `json:"errorCode,omitempty"`
+		ErrorMessage string `json:"errorMessage,omitempty"`
+	}
+
+	UserLoginRequest {
+		Username string `json:"username,omitempty"` // omitempty表示json序列化时如果字段值为类型零值，忽略该字段
+		Password string `json:"password,omitempty"`
+		Phone    string `json:"phone,omitempty"`
+		Email    string `json:"email,omitempty"`
+	}
+
+	UserLoginResponse {
+		ErrorCode    int32  `json:"errorCode,omitempty"`
+		ErrorMessage string `json:"errorMessage,omitempty"`
+		Token        string `json:"token,omitempty"`
+	}
+
+	GetUserInfoResponse {
+		ErrorCode    int32  `json:"errorCode,omitempty"`
+		ErrorMessage string `json:"errorMessage,omitempty"`
+		Id           string `json:"Id,omitempty"`
+		Username     string `json:"username,omitempty"`
+		Gender       string `json:"gender,omitempty"`
+		Phone        string `json:"phone,omitempty"`
+		Email        string `json:"email,omitempty"`
+		Nickname     string `json:"nickname,omitempty"`
+		Birthday     string `json:"birthday,omitempty"`
+	}
+)
+
+@server(
+	jwt: Auth
+	group: user    // 下面的path还是得写全
+)
+service user-api {
+	@handler getUserInfo
+	get /user/info () returns (UserRegisterResponse)
+}
+
+@server(
+	group: user
+)
+service user-api {
+	@handler userRegister
+	post /user/register (UserRegisterRequest) returns (GetUserInfoResponse)
+	
+	@handler userLogin
+	post /user/login (UserLoginRequest) returns (UserLoginResponse)
+}

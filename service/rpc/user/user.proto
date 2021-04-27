@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package user;
+
+message UserRegisterRequest {
+  string username = 1;
+  string password = 2;
+  string phone = 3;
+  string email = 4;
+}
+
+message UserRegisterResponse {
+  int32 errorCode = 1;
+  string errorMessage = 2;
+}
+
+message GetUserInfoRequest {
+  string id = 1;
+  string username = 2;
+  string phone = 3;
+  string email = 4;
+}
+
+
+message GetUserInfoResponse {
+  int32 errorCode = 1;
+  string errorMessage = 2;
+  string id = 3;   // mysql中用bigint，业务逻辑代码那边从数据库取到数据以后转string
+  string username = 4;
+  string gender = 5;
+  string phone = 6;
+  string email = 7;
+  string nickname = 8;
+  string birthday = 9;  // format: 2006-01-02
+  string password = 10;
+}
+
+service User {
+  rpc UserRegister(UserRegisterRequest) returns(UserRegisterResponse);
+  rpc GetUserInfo(GetUserInfoRequest) returns(GetUserInfoResponse);
+}
+
+

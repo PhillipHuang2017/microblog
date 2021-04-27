@@ -1,0 +1,12 @@
+Name: user-api
+Host: user-api
+Port: 8080
+UserPasswordSalt: 2f9c673b-4789-4cbb-8b00-a58cdfc685bd
+Auth:
+  AccessSecret: secretsecret
+  AccessExpire: 1800   # token过期时间
+UserRpc:
+  Etcd:
+    Hosts:
+      - etcd:2379
+    Key: user.rpc
