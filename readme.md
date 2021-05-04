@@ -1,5 +1,12 @@
 ## 功能
-用户注册、登陆、获取自己的信息
+用户注册、登陆、获取自己的信息。
+```mermaid
+sequenceDiagram
+client ->> user_api: POST -d '{"username": "phillip", "password": "123"}' http://localhost:8080/user/register
+user_api ->> user_rpc: User.UserRegister
+user_rpc ->> user_api: {errorCode: 0, errorMessage: ""}
+user_api ->> client: {errorCode: 0, errorMessage: ""}
+```
 
 ## 启动
 需要安装docker。   
